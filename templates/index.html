@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Tech News</title>
+   
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+</head>
+
+<body>
+    <div class="ui menu">
+        <h4 class="ui header item blue">
+            <div class="content">
+                Mini Tech News {{ emoji.NEWSPAPER }}
+            </div>
+        </h4>
+    </div>
+
+    <div class="ui container">
+
+        <h4 class="ui header" id="greet-user" style="margin-top:10px; margin-left:10px">Loading</h4>
+
+        {% if error|string|length > 0 %}
+            <div class="ui negative message">
+                {{ error }}
+            </div>
+
+        {% else %}
+
+            <p class="ui hint" style="margin-top:10px; margin-left:10px">
+                {{ emoji.INFORMATION }} You can choose 'Learn More' to access the source article.
+            </p>
+            
+            {% for article in news_articles %}
+            <div class="ui fluid card">
+                <div class="content">
+                    <div class="right floated meta">{{ article.get('published_when') }}</div>
+                    {{ article.get('source') }}
+                </div>
+                <div class="image">
+                    <img src="{{ article.get('image_url') }}">
+                </div>
+                <div class="content">
+                    <div class="header">{{ article.get('title') }}</div>
+                    <div class="description">
+                        {{ article.get('description') }}
+                    </div>
+                </div>
+        
+                <div class="ui buttons">
+                    <button class="ui button"
+                        onclick="openURL('{{ article.get('url') }}')"
+                    >
+                    <i class="globe icon"></i>
+                        Learn more
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                <i class="check circle icon"></i>
+                    You're All Caught Up
+                </div>
+                <button 
+                    class="ui button"
+                    onclick="closeApp();Telegram.WebApp.close();"
+                >
+                    Close the App
+                </button>
+            </div>
+        {% endif %}
+
+        <br>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    Telegram.WebApp.expand();
+    Telegram.WebApp.ready();
+
+    var initData = new URLSearchParams(Telegram.WebApp.initData);
+    var first_name = JSON.parse(initData.get('user')).first_name
+    
+    document.getElementById("greet-user").innerHTML = "Hi " + first_name + "! Welcome to Mini Tech News. Let's catch up on the latest tech news."
+
+    function closeApp() {
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    console.log("Sending message in chat successful");
+                }
+                else {
+                    console.log('Sending message in failed');
+                }
+            }
+        };
+
+        xhttp.open("POST", "/webapp-close", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        var user_id = JSON.parse(initData.get('user')).id
+        xhttp.send("user_id=" + user_id);
+    }
+
+    function openURL(link) {
+        Telegram.WebApp.openLink(link);
+    }
+
+</script>
+
+</html>

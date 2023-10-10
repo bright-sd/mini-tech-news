@@ -1,0 +1,5 @@
+flask==3.0.0
+requests==2.31.0
+loguru==0.7.2
+pytz==2023.3.post1
+humanize==4.8.0

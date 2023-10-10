@@ -1,0 +1,24 @@
+body {
+    background-color: var(--tg-theme-bg-color);
+}
+
+.ui.container {
+    background-color: var(--tg-theme-bg-color);
+}
+
+.ui.button {
+    background-color: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+}
+
+.check.circle.icon {
+    color: var(--tg-theme-button-color);
+}
+
+.ui.header {
+    color: var(--tg-theme-text-color);
+}
+
+.ui.hint {
+    color: var(--tg-theme-hint-color);
+}
